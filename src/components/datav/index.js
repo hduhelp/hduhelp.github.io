@@ -26,11 +26,8 @@ export default () => {
 
             <div className="block-top-bottom-content">
               <div className="block-top-content">
-                <RoseChart />
-
                 <WaterLevelChart />
-
-                <ScrollBoard />
+                <RoseChart />
               </div>
 
               <Cards />
