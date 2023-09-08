@@ -7,7 +7,6 @@ import DigitalFlop from './DigitalFlop'
 import RankingBoard from './RankingBoard'
 import RoseChart from './RoseChart'
 import WaterLevelChart from './WaterLevelChart'
-import ScrollBoard from './ScrollBoard'
 import Cards from './Cards'
 
 import './index.less'
