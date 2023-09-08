@@ -3,13 +3,19 @@ import React, { useState, useEffect } from 'react'
 import { DigitalFlop, Decoration10 } from '@jiaminghi/data-view-react'
 
 import './DigitalFlop.less'
+import httpGet from '../../service/request'
+
+let wechatFollow = 0
+let wechatRead = 0
+let wechatServeYesterday = 0
+let wechatServeToday = 0
 
 function getData() {
   return [
     {
-      title: '管养里程',
+      title: '微信关注量',
       number: {
-        number: [randomExtend(20000, 30000)],
+        number: [wechatFollow],
         content: '{nt}',
         textAlign: 'right',
         style: {
@@ -17,12 +23,12 @@ function getData() {
           fontWeight: 'bold',
         },
       },
-      unit: '公里',
+      unit: '位',
     },
     {
-      title: '桥梁',
+      title: '昨日推文阅读',
       number: {
-        number: [randomExtend(20, 30)],
+        number: [wechatRead],
         content: '{nt}',
         textAlign: 'right',
         style: {
@@ -30,12 +36,12 @@ function getData() {
           fontWeight: 'bold',
         },
       },
-      unit: '座',
+      unit: '次',
     },
     {
-      title: '涵洞隧道',
+      title: '昨日微信服务',
       number: {
-        number: [randomExtend(20, 30)],
+        number: [wechatServeYesterday],
         content: '{nt}',
         textAlign: 'right',
         style: {
@@ -43,12 +49,12 @@ function getData() {
           fontWeight: 'bold',
         },
       },
-      unit: '个',
+      unit: '次',
     },
     {
-      title: '匝道',
+      title: '今日微信服务',
       number: {
-        number: [randomExtend(10, 20)],
+        number: [wechatServeToday],
         content: '{nt}',
         textAlign: 'right',
         style: {
@@ -56,7 +62,7 @@ function getData() {
           fontWeight: 'bold',
         },
       },
-      unit: '个',
+      unit: '次',
     },
     {
       title: '隧道',
@@ -139,10 +145,21 @@ export default () => {
 
   useEffect(() => {
     createData()
+    getWechatFollowNum()
+    getWechatArticleReadNum()
+    getWechatServiceTimesYesterday()
+    getWechatServiceTimesToday()
 
-    const timer = setInterval(createData, 30000)
+    const timer = setInterval(createData, 3000)
 
-    return () => clearInterval(timer)
+    const wechatTimer = setInterval(getWechatFollowNum, 30000)
+    const wechatServiceTimer = setInterval(getWechatServiceTimesToday, 30000)
+
+    return () => {
+      clearInterval(timer)
+      clearInterval(wechatTimer)
+      clearInterval(wechatServiceTimer)
+    }
   }, [])
 
   function createData() {
@@ -163,5 +180,25 @@ export default () => {
 
       <Decoration10 />
     </div>
+  )
+}
+
+function getWechatFollowNum() {
+  httpGet('https://api.hduhelp.com/wechat/data').then(r => (wechatFollow = r.user))
+}
+
+function getWechatArticleReadNum() {
+  httpGet('https://api.hduhelp.com/wechat/stats/article/read').then(r => (wechatRead = r))
+}
+
+function getWechatServiceTimesYesterday() {
+  httpGet('https://api.hduhelp.com/aggregating/metric/wechat/yesterday').then(
+    r => (wechatServeYesterday = Number(r))
+  )
+}
+
+function getWechatServiceTimesToday() {
+  httpGet('https://api.hduhelp.com/aggregating/metric/wechat/today').then(
+    r => (wechatServeToday = Number(r))
   )
 }

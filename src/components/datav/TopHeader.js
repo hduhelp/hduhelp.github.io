@@ -10,7 +10,7 @@ export default () => {
       <Decoration8 className="header-left-decoration" />
       <Decoration5 className="header-center-decoration" />
       <Decoration8 className="header-right-decoration" reverse={true} />
-      <div className="center-title">施工养护综合数据</div>
+      <div className="center-title">杭电助手服务数据</div>
     </div>
   )
 }
