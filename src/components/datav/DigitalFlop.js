@@ -9,6 +9,7 @@ let wechatFollow = 0
 let wechatRead = 0
 let wechatServeYesterday = 0
 let wechatServeToday = 0
+let dingWidgetClick = 0
 
 function getData() {
   return [
@@ -65,9 +66,9 @@ function getData() {
       unit: '次',
     },
     {
-      title: '隧道',
+      title: '钉钉组件点击',
       number: {
-        number: [randomExtend(5, 10)],
+        number: [dingWidgetClick],
         content: '{nt}',
         textAlign: 'right',
         style: {
@@ -75,7 +76,7 @@ function getData() {
           fontWeight: 'bold',
         },
       },
-      unit: '个',
+      unit: '次',
     },
     {
       title: '服务区',
@@ -149,16 +150,19 @@ export default () => {
     getWechatArticleReadNum()
     getWechatServiceTimesYesterday()
     getWechatServiceTimesToday()
+    getDingTalkWidgetMetric()
 
     const timer = setInterval(createData, 3000)
 
     const wechatTimer = setInterval(getWechatFollowNum, 30000)
     const wechatServiceTimer = setInterval(getWechatServiceTimesToday, 30000)
+    const dingTalkTimer = setInterval(getDingTalkWidgetMetric, 30000)
 
     return () => {
       clearInterval(timer)
       clearInterval(wechatTimer)
       clearInterval(wechatServiceTimer)
+      clearInterval(dingTalkTimer)
     }
   }, [])
 
@@ -201,4 +205,8 @@ function getWechatServiceTimesToday() {
   httpGet('https://api.hduhelp.com/aggregating/metric/wechat/today').then(
     r => (wechatServeToday = Number(r))
   )
+}
+
+function getDingTalkWidgetMetric() {
+  httpGet('https://news.hduhelp.com/subscription/v1/ding/metric').then(r => (dingWidgetClick = r))
 }
